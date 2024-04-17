@@ -1,0 +1,37 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Catalog {
+  catalog_id  Int       @id @default(autoincrement()) @map("CatalogId")
+  name        String    @map("Name")
+  description String?   @map("Description")
+  created_by  String    @map("CreatedBy")
+  created_at  DateTime  @map("CreatedAt")
+  updated_at  DateTime? @map("UpdatedAt")
+  updated_by  String?   @map("UpdatedBy")
+  is_deleted  Boolean   @default(false) @map("IsDeleted")
+  variants    Variant[]
+}
+
+model Variant {
+  variant_id Int       @id @default(autoincrement()) @map("VariantId")
+  name       String    @map("Name")
+  price      Float     @map("Price")
+  sku        String    @unique() @map("Sku")
+  catalog_id Int       @map("CatalogId")
+  created_by String?   @map("CreatedBy")
+  created_at DateTime? @map("CreatedAt")
+  updated_at DateTime? @map("UpdatedAt")
+  updated_by String?   @map("UpdatedBy")
+  catalog    Catalog   @relation(fields: [catalog_id], references: [catalog_id])
+  is_deleted Boolean   @default(false) @map("IsDeleted")
+}
