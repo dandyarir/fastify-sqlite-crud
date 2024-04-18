@@ -9,7 +9,6 @@ export enum RESPONSE_CODE {
   FORBIDDEN =  403,
   REQUEST_TIMEOUT =  408,
   UNPROCESSABLE_ENTITY =  422,
-};
-export const RESPONSE_SUCCESS = true;
-export const RESPONSE_FAILURE = false;
-
+}
+export const RESPONSE_SUCCESS = true
+export const RESPONSE_FAILURE = false
