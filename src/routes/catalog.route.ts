@@ -117,7 +117,7 @@ export const catalogRoutes = (app: FastifyInstance) => {
                 properties: {
                     limit: { type: 'number', default: 10 },
                     offset: { type: 'number', default: 0 },
-                    sortBy: { type: 'string', enum: Object.entries(Prisma.CatalogScalarFieldEnum).map(([key, value]) => value), default: Prisma.CatalogScalarFieldEnum.catalog_id },
+                    sortBy: { type: 'string', enum: Object.entries(Prisma.CatalogScalarFieldEnum).map(([, value]) => value), default: Prisma.CatalogScalarFieldEnum.catalog_id },
                     sortOrder: { type: 'string', default: 'asc' },
 
                 }

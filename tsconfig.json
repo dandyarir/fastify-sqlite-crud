@@ -111,7 +111,9 @@
   },
   "include": [
     "src/**/*",
-    "__tests__/*.test.ts"
+    "__tests__/*.test.ts",
+    ".eslintrc.js",
+    "jest.config.js"
   ],
   "exclude": [
     "build",
