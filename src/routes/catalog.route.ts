@@ -39,7 +39,9 @@ export const catalogRoutes = (app: FastifyInstance) => {
                         data: {
                             type: 'object',
                             properties: {
-                                catalog_id: 'number',
+                                catalog_id: {
+                                  type: 'number',
+                                }
                             }
                         }
                     },
