@@ -47,6 +47,9 @@ const getCatalog = async (request: FastifyRequest | any, reply: FastifyReply) =>
       const catalogs = await prisma.catalog.findMany({
           take: request.query.limit || 10,
           skip: request.query.offset || 0,
+          where: {
+                is_deleted: false
+          },
           orderBy: {
               [request.query.sortBy || Prisma.CatalogScalarFieldEnum.catalog_id ]: request.query.sortOrder || Prisma.SortOrder.asc  
           },
@@ -58,6 +61,9 @@ const getCatalog = async (request: FastifyRequest | any, reply: FastifyReply) =>
               updated_at: true,
               updated_by: true,
               variants: {
+                  where: {
+                        is_deleted: false
+                  },
                   select: {
                       variant_id: true,
                       name: true,
@@ -121,7 +127,10 @@ const updateCatalog = async (request: FastifyRequest | any, reply: FastifyReply)
             },
             data: catalogModel.toUpdateCatalogPayload(request.body)
         });
-        reply.code(RESPONSE_CODE.SUCCESS).send( { message: locale('CATALOG_UPDATE_SUCCESS') });
+        reply.code(RESPONSE_CODE.SUCCESS).send( { 
+            message: locale('CATALOG_UPDATE_SUCCESS'),
+            catalog_id: request.params.catalogId 
+        });
     } catch (error: any) {
         reply.code(RESPONSE_CODE.BAD_REQUEST).send({ message: locale('SERVER_ERROR') });
     }
@@ -129,12 +138,25 @@ const updateCatalog = async (request: FastifyRequest | any, reply: FastifyReply)
 
 const deleteCatalog = async (request: FastifyRequest | any, reply: FastifyReply) => {
     try {
-        await prisma.catalog.delete({
+       const result = await prisma.catalog.update({
             where: {
                 catalog_id: request.params.catalogId
-            }
+            },
+            data: {
+                is_deleted: true,
+                variants: {
+                    updateMany: {
+                        where: {
+                            catalog_id: request.params.catalogId
+                        },
+                        data: {
+                            is_deleted: true
+                        }
+                    }
+                }
+            },
         });
-        reply.code(RESPONSE_CODE.SUCCESS).send({ message: locale('CATALOG_DELETE_SUCCESS') });
+        reply.code(RESPONSE_CODE.SUCCESS).send({ message: locale('CATALOG_DELETE_SUCCESS'), catalog_id: result.catalog_id});
     } catch (error: any) {
         reply.code(RESPONSE_CODE.BAD_REQUEST).send({ message: locale('SERVER_ERROR') });
     }

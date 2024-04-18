@@ -10,6 +10,7 @@ export const en: AppMessage = {
     CATALOG_GET_ALL_SUCCESS: "Catalog(s) retrieved successfully",
     CATALOG_GET_ONE_SUCCESS: "Catalog retrieved successfully",
     CATALOG_DELETE_SUCCESS: "Catalog deleted successfully",
+    CATALOG_UPDATE_SUCCESS: "Catalog updated successfully",
     VARIANT_SKU_EXIST: "SKU variant already exist",
      
 };

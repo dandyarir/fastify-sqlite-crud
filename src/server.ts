@@ -38,9 +38,8 @@ const start = async () => {
       console.error(err);
       process.exit(1);
     }
-    console.info(`==========================================`);
-    console.info(`🚀 API (${CONF_ENV}) listening on the port ${PORT}`);
-    console.info(`==========================================`);
+    console.log(`🚀 API Server (${CONF_ENV}) listening on ${SERVER_URL}`);
+    
   });
 };
 

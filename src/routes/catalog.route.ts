@@ -50,7 +50,7 @@ export const catalogRoutes = (app: FastifyInstance) => {
                 tags: ['Catalog']
             }
         },
-        preHandler: validator(catalogSchema), // Assuming you have the validator middleware
+        preHandler: validator(catalogSchema),        
         handler: CatalogController.create,
     });
 
@@ -173,14 +173,37 @@ export const catalogRoutes = (app: FastifyInstance) => {
                     catalogId: { type: 'number' }
                 }
             },
-            body: catalogSchema,
+            body: {
+                type: 'object', 
+                properties: {
+                    name: { type: 'string', minLength: 3, maxLength: 30 },
+                    description: { type: 'string', minLength: 10, maxLength: 100 },
+                    variants: {
+                        type: 'array',
+                        items: {
+                            type: 'object',
+                            properties: {
+                                name: { type: 'string', minLength: 3, maxLength: 30 },
+                                price: { type: 'number', minimum: 1000 },
+                            },
+                            required: ['name', 'price'],
+                            additionalProperties: false,
+                        }
+                    }
+                },
+                required: ['name', 'description'],
+                additionalProperties: false,
+            },
             response: {
                 200: {
                     type: 'object',
                     properties: {
                         message: {
                             type: 'string',
-                        }
+                        },
+                        catalog_id: {   
+                            type: 'number',
+                        },
                     },
                 },
             }
@@ -192,12 +215,31 @@ export const catalogRoutes = (app: FastifyInstance) => {
                 tags: ['Catalog'],
             }
         },
-        preHandler: [validator(
+        preHandler: validator(
             {
-                ...catalogSchema,
-                required: [],
+                type: 'object',
+                properties: {
+                    catalogId: { type: 'number' },
+                    name: { type: 'string', minLength: 3, maxLength: 30 },
+                    description: { type: 'string', minLength: 10, maxLength: 100 },
+                    variants: {
+                        type: 'array',
+                        items: {
+                            type: 'object',
+                            properties: {
+                                name: { type: 'string', minLength: 3, maxLength: 30 },
+                                price: { type: 'number', minimum: 1000 },
+                            },
+                            required: ['name', 'price'],
+                            additionalProperties: false,
+                        }
+                    }
+                },
+                required: ['name', 'description', 'catalogId'],
+                additionalProperties: false,
             }
-        )],
+        
+        ),
         handler: CatalogController.updateCatalog,
     });
 
@@ -217,15 +259,18 @@ export const catalogRoutes = (app: FastifyInstance) => {
                     properties: {
                         message: {
                             type: 'string',
-                        }
+                        },
+                        catalog_id: {
+                            type: 'number',
+                        },
                     },
                 },
             }
         },
         config: {
             openapi: {
-                description: 'Delete user profile',
-                summary: 'Delete user',
+                description: 'Delete catalog',
+                summary: 'Delete catalog as well as its variants',
                 tags: ['Catalog'],
             }
         },

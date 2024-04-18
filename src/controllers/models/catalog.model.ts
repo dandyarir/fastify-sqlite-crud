@@ -23,23 +23,25 @@ export class CatalogModel {
   }
 
   toUpdateCatalogPayload(params: TUpdateCatalog) {
-    const body: Prisma.CatalogUpdateInput = {
-      name: params.name,
-      description: params.description,
-      variants: {
-        update: params.variants?.map((variant) => ({
-          where: { variant_id: variant.id },
+    const body: Prisma.CatalogUpdateInput = {};
+
+    body.updated_by = 'system';
+    if (params.name) body.name = params.name;
+    if (params.description) body.description = params.description;
+    if (params.updated_by) body.updated_by = params.updated_by;
+    if (params.variants) {
+      body.variants = {
+        update: params.variants.map((variant) => ({
+          where: { variant_id: variant.variant_id },
           data: {
             name: variant.name,
             price: variant.price,
-            updated_at: variant.updated_at || new Date(),
+            updated_at: new Date(),
             updated_by: variant.updated_by || 'system',
           },
         })),
-      },
-      updated_at: params.updated_at,
-      updated_by: params.updated_by,
-    };
+      };
+    }
 
     return body;
   }

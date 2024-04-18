@@ -43,7 +43,7 @@ export type TUpdateCatalog = {
 }
 
 export type TUpdateVariant = {
-  id: number;
+  variant_id: number;
   name?: string;
   price?: number;
   updated_at: Date;
