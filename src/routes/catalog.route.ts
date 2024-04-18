@@ -15,7 +15,7 @@ const catalogSchema = {
                 properties: {
                     name: { type: 'string', minLength: 3, maxLength: 30 },
                     sku: { type: 'string', minLength: 3, maxLength: 30 },
-                    price: { type: 'number' },
+                    price: { type: 'number', minimum: 1000 },
                 },
                 required: ['name', 'sku', 'price'],
                 additionalProperties: false,
@@ -33,11 +33,14 @@ export const catalogRoutes = (app: FastifyInstance) => {
         schema: {
             body: catalogSchema,
             response: {
-                200: {
+                201: {
                     type: 'object',
                     properties: {
-                        catalog_id: {
-                            type: 'number',
+                        data: {
+                            type: 'object',
+                            properties: {
+                                catalog_id: 'number',
+                            }
                         }
                     },
                 }
