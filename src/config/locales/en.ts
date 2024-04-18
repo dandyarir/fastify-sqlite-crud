@@ -11,6 +11,7 @@ export const en: AppMessage = {
     CATALOG_GET_ONE_SUCCESS: "Catalog retrieved successfully",
     CATALOG_DELETE_SUCCESS: "Catalog deleted successfully",
     CATALOG_UPDATE_SUCCESS: "Catalog updated successfully",
+    CATALOG_NOT_FOUND: "Catalog not found",
     VARIANT_SKU_EXIST: "SKU variant already exist",
      
 };

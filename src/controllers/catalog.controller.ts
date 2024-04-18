@@ -156,6 +156,7 @@ const deleteCatalog = async (request: FastifyRequest | any, reply: FastifyReply)
                 }
             },
         });
+        if (!result) return reply.code(RESPONSE_CODE.BAD_REQUEST).send({ message: locale('CATALOG_NOT_FOUND') });
         reply.code(RESPONSE_CODE.SUCCESS).send({ message: locale('CATALOG_DELETE_SUCCESS'), catalog_id: result.catalog_id});
     } catch (error: any) {
         reply.code(RESPONSE_CODE.BAD_REQUEST).send({ message: locale('SERVER_ERROR') });

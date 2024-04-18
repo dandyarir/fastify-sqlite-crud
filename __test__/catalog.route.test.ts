@@ -29,6 +29,25 @@ describe('catalog route test', () => {
       expect(mockReply.code).toHaveBeenCalledWith(200);
       expect(mockReply.send).toHaveBeenCalledWith({ message: expect.any(String), catalog_id: expect.any(Number) });
     });
+    it('should return 400 if catalog not found', async () => {
+      const mockRequest = {
+        params: { 
+          catalogId: "1",
+        },
+      };
+      const mockReply = {
+          code: jest.fn(() => mockReply),
+          send: jest.fn(),
+      } as unknown as FastifyReply;
+  
+      const mockDelete = jest.fn().mockResolvedValue(null);
+      prismaMock.catalog.update.mockImplementation(mockDelete);
+  
+      await catalogController.deleteCatalog(mockRequest as unknown as FastifyRequest, mockReply);
+  
+      expect(mockReply.code).toHaveBeenCalledWith(400);
+      expect(mockReply.send).toHaveBeenCalledWith({ message: expect.any(String) });
+    });
   });
   
   describe('POST /catalog', () => {
@@ -65,7 +84,40 @@ describe('catalog route test', () => {
       expect(mockReply.code).toHaveBeenCalledWith(201);
       expect(mockReply.send).toHaveBeenCalledWith({ data: { catalog_id: 4 }});
     });
+
+    it('should return 400 if catalog sku duplicate', async () => {
+      const mockRequest = {
+        body: {
+          "name": "Sosro",
+          "description": "Minuman Teh",
+          "variants": [
+            {
+              "name": "Original",
+              "sku": "SOO1-test",
+              "price": 7000
+            }
+          ]
+        }
+      };
+      const mockReply = {
+          code: jest.fn(() => mockReply),
+          send: jest.fn(),
+      } as unknown as FastifyReply;
+
+      const mockCreate = jest.fn().mockRejectedValue({
+        code: 'P2002',
+        meta: {
+          target: 'Sku'
+        }
+      });
+      prismaMock.catalog.create.mockImplementation(mockCreate);
+      await catalogController.create(mockRequest as unknown as FastifyRequest, mockReply);
+
+      expect(mockReply.code).toHaveBeenCalledWith(400);
+      expect(mockReply.send).toHaveBeenCalledWith({ message: expect.any(String) });
+    });
   });
+
   
   describe('GET /catalog/:catalogId', () => {
     beforeEach(() => {
@@ -83,7 +135,7 @@ describe('catalog route test', () => {
           send: jest.fn(),
       } as unknown as FastifyReply;
   
-      // Add your mock implementation for CatalogController.getDetailCatalog here
+      
       const mockFindFirst = jest.fn().mockResolvedValue({
         catalog_id: 1,
         name: "Sosro",
@@ -128,6 +180,26 @@ describe('catalog route test', () => {
           }),
         ]),
       }));
+    });
+
+    it('should return 400 on DB error', async () => {
+      const mockRequest = {
+        params: {
+          catalogId: 1,
+        },
+      };
+      const mockReply = {
+          code: jest.fn(() => mockReply),
+          send: jest.fn(),
+      } as unknown as FastifyReply;
+  
+      
+      const mockFindFirst = jest.fn().mockRejectedValue(new Error('DB Error'));
+      prismaMock.catalog.findFirst.mockImplementation(mockFindFirst);
+      await catalogController.getDetailCatalog(mockRequest as unknown as FastifyRequest, mockReply);
+  
+      expect(mockReply.code).toHaveBeenCalledWith(400);
+      expect(mockReply.send).toHaveBeenCalledWith({ message: expect.any(String) });
     });
   });
   
@@ -201,6 +273,26 @@ describe('catalog route test', () => {
         }),
       ]));
 
+    });
+
+    it('should return 400 on DB error while get list of catalogs', async () => {
+      const mockRequest = {
+        params: {
+          catalogId: 1,
+        },
+      };
+      const mockReply = {
+          code: jest.fn(() => mockReply),
+          send: jest.fn(),
+      } as unknown as FastifyReply;
+  
+      
+      const mockFindFirst = jest.fn().mockRejectedValue(new Error('DB Error'));
+      prismaMock.catalog.findMany.mockImplementation(mockFindFirst);
+      await catalogController.getCatalog(mockRequest as unknown as FastifyRequest, mockReply);
+  
+      expect(mockReply.code).toHaveBeenCalledWith(400);
+      expect(mockReply.send).toHaveBeenCalledWith({ message: expect.any(String) });
     });
   });
   
