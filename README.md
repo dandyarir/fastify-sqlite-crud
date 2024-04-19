@@ -31,6 +31,22 @@ npm run build
 npm start-build
 ```
 
+## Installation with Docker
+execute the following command to build the docker:
+
+1. Build the image
+```bash
+docker build -t fastify-api-crud:v1 .
+```
+2. Run the image
+```bash
+docker run -p EXPOSED_PORT:PORT_APP fastify-api-crud:v1
+```
+3. Access the API on 
+```bash
+http://localhost:PORT_APP
+```
+
 ## How to access API Documentation
 Please access the following URL to access the swagger documentation:
 ```bash
