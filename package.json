@@ -36,6 +36,8 @@
     "start-debug": "node --inspect-brk -r ts-node/register src/server.ts",
     "start-build": "node build/server.js",
     "lint": "eslint . --ext .ts",
-    "test": "jest"
+    "test": "jest",
+    "prisma:generate": "prisma generate",
+    "prisma:migrate:deploy": "prisma migrate deploy"
   }
 }

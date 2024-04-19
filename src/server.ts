@@ -33,7 +33,7 @@ const start = async () => {
   });
 
   IndexRoutes(app)
-  app.listen({ port: PORT }, (err) => {
+  app.listen({ port: PORT, host: '0.0.0.0' }, (err) => {
     if (err) {
       console.error(err);
       process.exit(1);
