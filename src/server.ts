@@ -6,7 +6,7 @@ const fastifyOpenapiDocs = import("fastify-openapi-docs");
 const app: FastifyInstance = fastify({
   logger: true
 });
-// Start the server
+// init swagger
 const start = async () => {
   await app.register(fastifyOpenapiDocs, {
     openapi: {
@@ -32,7 +32,13 @@ const start = async () => {
     exposeRoute: true
   });
 
+  // Register routes
   IndexRoutes(app)
+  
+  /**
+   * Start the server
+   * Note: found an issue with fastify.listen() with docker should use host: 0.0.0.0 based on https://github.com/fastify/fastify/issues/935
+   */
   app.listen({ port: PORT, host: '0.0.0.0' }, (err) => {
     if (err) {
       console.error(err);
